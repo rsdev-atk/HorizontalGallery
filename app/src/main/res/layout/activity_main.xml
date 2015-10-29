@@ -14,7 +14,9 @@
         android:layout_width="fill_parent"
         android:layout_height="180dp"
         android:divider="#878787"
-        widget:dividerWidth="1dp" />
+        widget:dividerWidth="1dp"
+        android:state_selected="true"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

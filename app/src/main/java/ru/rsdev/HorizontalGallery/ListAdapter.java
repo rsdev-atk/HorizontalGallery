@@ -1,6 +1,7 @@
 package ru.rsdev.HorizontalGallery;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.meetme.android.horizontallistview.HorizontalListView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -22,6 +24,7 @@ public class ListAdapter extends BaseAdapter {
     Context context;
     ArrayList<String> itemsName;
     ArrayList<String> itemsImage;
+
     LayoutInflater lInflater;
 
 
@@ -29,6 +32,7 @@ public class ListAdapter extends BaseAdapter {
         this.context=context;
         this.itemsName=itemsName;
         this.itemsImage=itemsImage;
+
 
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -63,6 +67,7 @@ public class ListAdapter extends BaseAdapter {
 
         textView.setText(itemsName.get(position));
 
+
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(context));
         DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -71,6 +76,16 @@ public class ListAdapter extends BaseAdapter {
                 .cacheOnDisc()
                 .build();
         imageLoader.displayImage("File:/" + itemsImage.get(position), imageView, options);
+
+        final HorizontalListView lv = (HorizontalListView) parent;
+        if(position == lv.getSelectedItemPosition()){
+            // цвет выбранного элемента
+            view.setBackgroundColor(0xFF0000FF);
+        } else {
+            // старая разметка, где работает только state_pressed
+            view.setBackgroundColor(Color.BLUE);
+        }
+
 
         return view;
     }

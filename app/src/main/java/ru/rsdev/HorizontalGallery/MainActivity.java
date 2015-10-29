@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -113,12 +114,12 @@ public class MainActivity extends FragmentActivity {
         //http://www.programru.com/blog/MADM2ADMwITx.html
         //http://microsin.net/programming/android/saving-files.html
         //http://megadarja.blogspot.ru/2011/05/gallery.html
-        */
+
 
 
 
         int a = 0;
-
+        */
 
         //fileUtil.getDir(sdDIR);
         ArrayList<ArrayList<String>> arry = fileUtil.getDir(rootDir);
@@ -183,8 +184,8 @@ public class MainActivity extends FragmentActivity {
         return list;
     }
 
-//Слушатель для ListView с датами
-AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+    //Слушатель для ListView с датами
+    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             dayNumber = position;
@@ -193,6 +194,14 @@ AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickL
 
             String value = sharedPreferencesUtil.getData(getApplication(), "photo_"+ unicDateList.get(dayNumber));
             textDay.setText(value);
+
+
+            /*
+            if(position == dayNumber) {
+                ((LinearLayout) view).setBackgroundColor(Color.GREEN);  //вставляем свой цвет
+                view.invalidate();
+            }
+            */
         }
     };
 
