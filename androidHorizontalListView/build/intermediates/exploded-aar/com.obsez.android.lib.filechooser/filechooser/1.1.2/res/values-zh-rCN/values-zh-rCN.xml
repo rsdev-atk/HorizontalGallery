@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/data/opt/p/obsez-all/file-chooser/library/src/main/res/values-zh-rCN/strings_0.xml -->
+    <eat-comment/>
+    <string name="app_name">file-chooser-library</string>
+    <!-- From: file:/data/opt/p/obsez-all/file-chooser/library/src/main/res/values-zh-rCN/strings.xml -->
+    <eat-comment/>
+    <string name="choose_file">选择一个文件</string>
+    <!-- From: file:/data/opt/p/obsez-all/file-chooser/library/src/main/res/values-zh-rCN/strings_0.xml -->
+    <eat-comment/>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_ok">选择</string>
+    <!-- From: file:/data/opt/p/obsez-all/file-chooser/library/src/main/res/values-zh-rCN/strings.xml -->
+    <eat-comment/>
+    <string name="empty_directory">空目录</string>
+    <string name="error_selecting_file">选择文件发生了错误</string>
+    <string name="internal_storage">内部存储</string>
+    <string name="storage_removed">存储卡已被移除或卸载。</string>
+    <!-- From: file:/data/opt/p/obsez-all/file-chooser/library/src/main/res/values-zh-rCN/strings_0.xml -->
+    <eat-comment/>
+    <string name="title_choose">选择</string>
+    <string name="title_choose_dict_file">选择一个字典文件</string>
+</resources>
