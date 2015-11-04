@@ -15,7 +15,9 @@
         android:layout_height="180dp"
         android:divider="#878787"
         widget:dividerWidth="1dp"
-        android:state_selected="true"
+
+
+        android:choiceMode="singleChoice"
         />
 
     <LinearLayout

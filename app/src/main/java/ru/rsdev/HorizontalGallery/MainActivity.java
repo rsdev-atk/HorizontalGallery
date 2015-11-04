@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -189,6 +188,12 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             dayNumber = position;
+
+            ListAdapter.positionNumber = dayNumber;
+
+            //horizontalListView.setItemChecked(position, true);
+            //horizontalListView.setSelected(true);
+
             dayList = getAllImageInDay(dayNumber);
             showImage(dayList);
 

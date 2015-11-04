@@ -1,7 +1,6 @@
 package ru.rsdev.HorizontalGallery;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ public class ListAdapter extends BaseAdapter {
     ArrayList<String> itemsImage;
 
     LayoutInflater lInflater;
+    static int positionNumber;
 
 
     ListAdapter(Context context, ArrayList<String> itemsName, ArrayList<String> itemsImage) {
@@ -78,16 +78,16 @@ public class ListAdapter extends BaseAdapter {
         imageLoader.displayImage("File:/" + itemsImage.get(position), imageView, options);
 
         final HorizontalListView lv = (HorizontalListView) parent;
-        if(position == lv.getSelectedItemPosition()){
-            // цвет выбранного элемента
-            view.setBackgroundColor(0xFF0000FF);
-        } else {
-            // старая разметка, где работает только state_pressed
-            view.setBackgroundColor(Color.BLUE);
-        }
+
+
+        if(position == positionNumber)
+            view.setBackgroundColor(context.getResources().getColor(R.color.orange));
+
 
 
         return view;
     }
+
+
 }
 
