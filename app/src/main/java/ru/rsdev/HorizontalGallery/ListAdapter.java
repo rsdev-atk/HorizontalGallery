@@ -79,9 +79,9 @@ public class ListAdapter extends BaseAdapter {
 
         final HorizontalListView lv = (HorizontalListView) parent;
 
-
-        if(position == positionNumber)
+ /*       if(position == positionNumber)
             view.setBackgroundColor(context.getResources().getColor(R.color.orange));
+*/
 
 
 

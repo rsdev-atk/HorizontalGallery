@@ -199,6 +199,31 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
      * The listener that receives notifications when this view is clicked.
      */
     private OnClickListener mOnClickListener;
+    /**
+     * Controls if/how the user may choose/check items in the list
+     */
+    int mChoiceMode = CHOICE_MODE_NONE;
+
+    /**
+     * Normal list that does not indicate choices
+     */
+    public static final int CHOICE_MODE_NONE = 0;
+    /**
+     * The list allows up to one choice
+     */
+    public static final int CHOICE_MODE_SINGLE = 1;
+
+    /**
+     * The list allows multiple choices
+     */
+    public static final int CHOICE_MODE_MULTIPLE = 2;
+
+    /**
+     * The list allows multiple choices in a modal selection mode
+     */
+    public static final int CHOICE_MODE_MULTIPLE_MODAL = 3;
+
+
 
     public HorizontalListView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -1026,6 +1051,12 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 
             // Null out the view so we don't leak it
             mViewBeingTouched = null;
+        }
+    }
+
+    public void setItemChecked(int position, boolean b) {
+        if (mChoiceMode == CHOICE_MODE_NONE) {
+            return;
         }
     }
 

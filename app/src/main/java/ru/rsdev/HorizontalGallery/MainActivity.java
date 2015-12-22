@@ -25,6 +25,7 @@ import com.meetme.android.horizontallistview.HorizontalListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
@@ -52,6 +53,7 @@ public class MainActivity extends FragmentActivity {
     ArrayList<String> fileProperty = new ArrayList<String>();
     ArrayList<String> unicDateList = new ArrayList<String>();
     ArrayList<String> dayList = new ArrayList<String>();
+//    ArrayList<String> dateCalendar = new ArrayList<String>();
 
     FileUtil fileUtil = new FileUtil();
     SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil();
@@ -69,58 +71,9 @@ public class MainActivity extends FragmentActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-/*
-        //Сканирование всей SD карты на наличие зв.файлов
-        Cursor image = getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME},
-                        null, null, null);
-        image.moveToFirst();
+        //Добавление 30 дат от текущей даты
+        unicDateList.add("2015:11:5");
 
-/*
-        ContentResolver mContentResolver = new ContentResolver(this) {
-        };
-        Uri uri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor cur = mContentResolver.query(uri, null,
-                MediaStore.Audio.Media.IS_MUSIC + " = 1", null, null);
-
-
-        Cursor cursor11;
-        String[] columns = { android.provider.MediaStore.Audio.Albums._ID,
-                android.provider.MediaStore.Audio.Albums.ALBUM };
-
-        cursor11 = managedQuery(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                columns, null, null, null);
-        String[] displayFields = new String[] { MediaStore.Audio.Albums.ALBUM };
-
-
-
-
-        String[] projection = {MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.YEAR,
-                MediaStore.Audio.Media.ALBUM_ID};
-        Cursor cursor;
-        cursor = getContentResolver().query(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                projection, null, null, null);
-
-        //http://www.programru.com/blog/MADM2ADMwITx.html
-        //http://microsin.net/programming/android/saving-files.html
-        //http://megadarja.blogspot.ru/2011/05/gallery.html
-
-
-
-
-        int a = 0;
-        */
-
-        //fileUtil.getDir(sdDIR);
         ArrayList<ArrayList<String>> arry = fileUtil.getDir(rootDir);
         fileList = arry.get(0);
         fileProperty = arry.get(1);
@@ -139,12 +92,14 @@ public class MainActivity extends FragmentActivity {
         });
 
         //Поиск уникальных значений дат
-        getUnicDate();
+        //getUnicDate();
+
 
         horizontalListView.setOnItemClickListener(itemClickListener);
         dayList = getAllImageInDay(0);
-        showImage(dayList);
+//        showImage(dayList);
         setImageInDateList();
+
         String value = sharedPreferencesUtil.getData(getApplication(), "photo_"+ unicDateList.get(dayNumber));
         textDay.setText(value);
     }
@@ -191,8 +146,8 @@ public class MainActivity extends FragmentActivity {
 
             ListAdapter.positionNumber = dayNumber;
 
-            //horizontalListView.setItemChecked(position, true);
-            //horizontalListView.setSelected(true);
+            horizontalListView.setItemChecked(position, true);
+            horizontalListView.setSelected(true);
 
             dayList = getAllImageInDay(dayNumber);
             showImage(dayList);
@@ -201,12 +156,7 @@ public class MainActivity extends FragmentActivity {
             textDay.setText(value);
 
 
-            /*
-            if(position == dayNumber) {
-                ((LinearLayout) view).setBackgroundColor(Color.GREEN);  //вставляем свой цвет
-                view.invalidate();
-            }
-            */
+
         }
     };
 
@@ -218,8 +168,8 @@ public class MainActivity extends FragmentActivity {
         inflater.inflate(R.menu.menu_grid, menu);
     }
 
-    //Показ календаря для выбора новой даты
-    private void showDatePicker() {
+    //Показ календаря для выбора новой даты изображения
+    private void showDatePickerEditDateImage() {
         DatePickerFragment date = new DatePickerFragment();
         Calendar calender = getInstance();
         Bundle args = new Bundle();
@@ -231,7 +181,19 @@ public class MainActivity extends FragmentActivity {
         date.show(getSupportFragmentManager(), "Date Picker");
     }
 
-    //Слушатель для отлова выбора новой даты в календаре
+    private void showDatePickerChooseFirstDate() {
+        DatePickerFragment date = new DatePickerFragment();
+        Calendar calender = getInstance();
+        Bundle args = new Bundle();
+        args.putInt("year", calender.get(YEAR));
+        args.putInt("month", calender.get(MONTH));
+        args.putInt("day", calender.get(DAY_OF_MONTH));
+        date.setArguments(args);
+        date.setCallBack(onDateFirst);
+        date.show(getSupportFragmentManager(), "Date Picker");
+    }
+
+    //Слушатель для отлова выбора новой даты в календаре для изменения даты изображения
     DatePickerDialog.OnDateSetListener ondate = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -247,10 +209,74 @@ public class MainActivity extends FragmentActivity {
 
             fileUtil.getDir(rootDir);
             //fileUtil.getDir(sdDIR);
-            getUnicDate();
+//            getUnicDate();
             dayList = getAllImageInDay(0);
             setImageInDateList();
             showImage(dayList);
+        }
+    };
+
+    //Слушатель для отлова выбора новой первой даты
+    DatePickerDialog.OnDateSetListener onDateFirst = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.valueOf(year)).append(":").append(String.valueOf(monthOfYear)).append(":").append(String.valueOf(dayOfMonth));
+
+            Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_SHORT).show();
+
+            Calendar calendar;
+            calendar=Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, monthOfYear);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            String day0 = calendar.getTime().toString();
+
+            SimpleDateFormat month_date = new SimpleDateFormat("yyyy:MM:dd");
+
+            unicDateList.clear();
+            for(int i=0;i<30;i++){
+
+
+                String month_name = month_date.format(calendar.getTime());
+                unicDateList.add(month_name);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth + 1);
+            }
+            setImageInDateList();
+
+
+
+            int a = 0;
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+            fileUtil.setNewDateFile(puthFile, sb.toString());
+
+            fileList.clear();
+            fileProperty.clear();
+            unicDateList.clear();
+            dayList.clear();
+
+            fileUtil.getDir(rootDir);
+            //fileUtil.getDir(sdDIR);
+            getUnicDate();
+            dayList = getAllImageInDay(0);
+//            setImageInDateList();
+            showImage(dayList);
+            */
         }
     };
 
@@ -266,8 +292,8 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
-        ListAdapter adapterListView = new ListAdapter(this, unicDateList, coverList);
-        horizontalListView.setAdapter(adapterListView);
+//        ListAdapter adapterListView = new ListAdapter(this, unicDateList, coverList);
+//        horizontalListView.setAdapter(adapterListView);
     }
 
     //Обработчик нажатий по контекстному меню в GridView
@@ -278,7 +304,7 @@ public class MainActivity extends FragmentActivity {
 
             case R.id.item1://Изменение даты
                 puthFile = dayList.get(info.position);
-                showDatePicker();
+                showDatePickerEditDateImage();
                 break;
 
             case R.id.item2://Изменение обложки
@@ -372,6 +398,13 @@ public class MainActivity extends FragmentActivity {
         else {
             //Воспроизведение аудио
         }
+
+    }
+
+    public void clickDateChoose(View view) {
+        //Toast.makeText(this,"Выбор даты",Toast.LENGTH_SHORT).show();
+
+        showDatePickerChooseFirstDate();
 
     }
 }
