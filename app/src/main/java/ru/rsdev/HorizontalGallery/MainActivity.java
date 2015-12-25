@@ -49,13 +49,14 @@ public class MainActivity extends FragmentActivity {
     TextView textDay;
 
 
-    ArrayList<String> fileList = new ArrayList<String>();
-    ArrayList<String> fileProperty = new ArrayList<String>();
-    ArrayList<String> unicDateList = new ArrayList<String>();
+    ArrayList<String> fileList = new ArrayList<String>();//Список найденных файлов
+    ArrayList<String> fileProperty = new ArrayList<String>();//Список дат к найденным файлам
+    ArrayList<String> unicDateList = new ArrayList<String>();// Список дат для отображения
     ArrayList<String> dayList = new ArrayList<String>();
 //    ArrayList<String> dateCalendar = new ArrayList<String>();
 
     FileUtil fileUtil = new FileUtil();
+    DateUtil dateUtil = new DateUtil();
     SharedPreferencesUtil sharedPreferencesUtil = new SharedPreferencesUtil();
 
     String puthFile;
@@ -72,7 +73,21 @@ public class MainActivity extends FragmentActivity {
 
 
         //Добавление 30 дат от текущей даты
-        unicDateList.add("2015:11:5");
+        //Calendar.getInstance().getTime();
+        SimpleDateFormat currentDate = new SimpleDateFormat("yyyy:MM:dd");
+        Calendar calendar;
+        calendar=Calendar.getInstance();
+        String firstDayStart = currentDate.format(Calendar.getInstance().getTime());
+        int dayOfMonth = calendar.getTime().getDate();
+        for(int i=1;i<31;i++){
+
+            String firstDayNumber = currentDate.format(calendar.getTime());
+            firstDayNumber = dateUtil.getDateWithoutTime(firstDayNumber);
+            unicDateList.add(firstDayNumber);
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+        }
+
+        setImageInDateList();
 
         ArrayList<ArrayList<String>> arry = fileUtil.getDir(rootDir);
         fileList = arry.get(0);
@@ -222,7 +237,7 @@ public class MainActivity extends FragmentActivity {
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
             StringBuilder sb = new StringBuilder();
-            sb.append(String.valueOf(year)).append(":").append(String.valueOf(monthOfYear)).append(":").append(String.valueOf(dayOfMonth));
+            sb.append(String.valueOf(year)).append(":").append(String.valueOf(monthOfYear+1)).append(":").append(String.valueOf(dayOfMonth));
 
             Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_SHORT).show();
 
@@ -233,29 +248,16 @@ public class MainActivity extends FragmentActivity {
             calendar.set(Calendar.MONTH, monthOfYear);
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-            String day0 = calendar.getTime().toString();
-
             SimpleDateFormat month_date = new SimpleDateFormat("yyyy:MM:dd");
 
             unicDateList.clear();
-            for(int i=0;i<30;i++){
 
-
+            for(int i=1;i<31;i++){
                 String month_name = month_date.format(calendar.getTime());
                 unicDateList.add(month_name);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth + 1);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth - i);
             }
             setImageInDateList();
-
-
-
-            int a = 0;
-
-
-
-
-
-
 
 
 
@@ -280,8 +282,19 @@ public class MainActivity extends FragmentActivity {
         }
     };
 
+
+
+
+
+
+
+
     //Ищем изображения для обложек
     private void setImageInDateList(){
+
+        ///////TEST//////наполняем тестовыми данными для отображения
+
+        /*
         ArrayList<String> coverList = new ArrayList<String>();
         for(int i=0;i<unicDateList.size();i++){
             for (int j=0;j<fileList.size();j++){
@@ -290,10 +303,18 @@ public class MainActivity extends FragmentActivity {
                     break;
                 }
             }
+
+        }
+        */
+
+
+        ArrayList<String> coverList = new ArrayList<String>();
+        for (int i=0;i<30;i++){
+            coverList.add("/storage/emulated/0/DCIM/Camera/20151023_150901.jpg");
         }
 
-//        ListAdapter adapterListView = new ListAdapter(this, unicDateList, coverList);
-//        horizontalListView.setAdapter(adapterListView);
+        ListAdapter adapterListView = new ListAdapter(this, unicDateList, coverList);
+        horizontalListView.setAdapter(adapterListView);
     }
 
     //Обработчик нажатий по контекстному меню в GridView
