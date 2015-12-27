@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/efp_light__list_activated_holo" android:state_activated="true"/>
-    <item android:drawable="@android:color/transparent"/>
-
-</selector><!-- From: file:/D:/Development/Android/ExFilePicker/library/src/main/res/drawable/efp_light__activated_background_holo.xml --><!-- From: file:/C:/Users/home/Desktop/Files/androidHorizontalListView/build/intermediates/exploded-aar/ru.bartwell/exfilepicker/1.8/res/drawable/efp_light__activated_background_holo.xml -->

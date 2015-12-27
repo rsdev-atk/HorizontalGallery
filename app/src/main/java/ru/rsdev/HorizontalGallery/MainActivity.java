@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashSet;
 
+import ru.rsdev.HorizontalGallery.gallery.ImageDialogFragment;
 import ru.rsdev.files.R;
 
 import static java.util.Calendar.DAY_OF_MONTH;
@@ -46,13 +47,13 @@ public class MainActivity extends FragmentActivity {
 
     GridView gridView;
     HorizontalListView horizontalListView;
-    TextView textDay;
+    TextView textDay,textView2,textView;
 
 
     ArrayList<String> fileList = new ArrayList<String>();//Список найденных файлов
     ArrayList<String> fileProperty = new ArrayList<String>();//Список дат к найденным файлам
     ArrayList<String> unicDateList = new ArrayList<String>();// Список дат для отображения
-    ArrayList<String> dayList = new ArrayList<String>();
+    ArrayList<String> dayList = new ArrayList<String>();//Список материалов для выбранной даты
 //    ArrayList<String> dateCalendar = new ArrayList<String>();
 
     FileUtil fileUtil = new FileUtil();
@@ -71,13 +72,24 @@ public class MainActivity extends FragmentActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        //Привязка контекстного меню
+        registerForContextMenu(gridView);
+        registerForContextMenu(horizontalListView);
+
+        //Поиск всех файлов
+        ArrayList<ArrayList<String>> arry = fileUtil.getDir(rootDir);
+        fileList = arry.get(0);
+        fileProperty = arry.get(1);
+
 
         //Добавление 30 дат от текущей даты
-        //Calendar.getInstance().getTime();
         SimpleDateFormat currentDate = new SimpleDateFormat("yyyy:MM:dd");
         Calendar calendar;
         calendar=Calendar.getInstance();
         String firstDayStart = currentDate.format(Calendar.getInstance().getTime());
+        textView.setText(dateUtil.getDateWithoutTime(firstDayStart));
+
+
         int dayOfMonth = calendar.getTime().getDate();
         for(int i=1;i<31;i++){
 
@@ -89,13 +101,9 @@ public class MainActivity extends FragmentActivity {
 
         setImageInDateList();
 
-        ArrayList<ArrayList<String>> arry = fileUtil.getDir(rootDir);
-        fileList = arry.get(0);
-        fileProperty = arry.get(1);
 
-        //Привязка контекстного меню
-        registerForContextMenu(gridView);
-        registerForContextMenu(horizontalListView);
+
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -103,6 +111,16 @@ public class MainActivity extends FragmentActivity {
                                     int position, long id) {
                 //Показываем путь к изображению
                 Toast.makeText(getApplication(), fileList.get(position), Toast.LENGTH_SHORT).show();
+
+                //Показ выбранного изображения
+                ImageDialogFragment imageDialogFragment = new ImageDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("dayList",dayList);
+                imageDialogFragment.setArguments(bundle);
+
+
+                imageDialogFragment.show(getFragmentManager(), "imageDialogFragment");
+
             }
         });
 
@@ -112,8 +130,21 @@ public class MainActivity extends FragmentActivity {
 
         horizontalListView.setOnItemClickListener(itemClickListener);
         dayList = getAllImageInDay(0);
-//        showImage(dayList);
+        showImage(dayList);
         setImageInDateList();
+
+
+        if(dayList.isEmpty()){
+            textView2.setText("Материалов не найдено");
+            textView2.setHeight(60);
+        }
+        else {
+            textView2.setText("");
+            textView2.setHeight(0);
+        }
+
+
+
 
         String value = sharedPreferencesUtil.getData(getApplication(), "photo_"+ unicDateList.get(dayNumber));
         textDay.setText(value);
@@ -167,11 +198,17 @@ public class MainActivity extends FragmentActivity {
             dayList = getAllImageInDay(dayNumber);
             showImage(dayList);
 
+            //Вывод сообщения об отсутствии данных, или отображение материалов
+            if(dayList.isEmpty()){
+                textView2.setText("Материалов не найдено");
+                textView2.setHeight(60);
+            }
+            else {
+                textView2.setText("");
+                textView2.setHeight(0);
+            }
             String value = sharedPreferencesUtil.getData(getApplication(), "photo_"+ unicDateList.get(dayNumber));
             textDay.setText(value);
-
-
-
         }
     };
 
@@ -239,7 +276,7 @@ public class MainActivity extends FragmentActivity {
             StringBuilder sb = new StringBuilder();
             sb.append(String.valueOf(year)).append(":").append(String.valueOf(monthOfYear+1)).append(":").append(String.valueOf(dayOfMonth));
 
-            Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_SHORT).show();
 
             Calendar calendar;
             calendar=Calendar.getInstance();
@@ -253,12 +290,35 @@ public class MainActivity extends FragmentActivity {
             unicDateList.clear();
 
             for(int i=1;i<31;i++){
-                String month_name = month_date.format(calendar.getTime());
-                unicDateList.add(month_name);
+                /*
+                String firstDate = month_date.format(calendar.getTime());
+                unicDateList.add(firstDate);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth - i);
+                */
+
+                String firstDayNumber = month_date.format(calendar.getTime());
+                firstDayNumber = dateUtil.getDateWithoutTime(firstDayNumber);
+                unicDateList.add(firstDayNumber);
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+
+
+
             }
             setImageInDateList();
+            //textView.setText(dateUtil.getDateWithoutTime(unicDateList.get(0)));
+            textView.setText(unicDateList.get(0));
 
+            dayList = getAllImageInDay(0);
+            showImage(dayList);
+            //Вывод сообщения об отсутствии данных, или отображение материалов
+            if(dayList.isEmpty()){
+                textView2.setText("Материалов не найдено");
+                textView2.setHeight(60);
+            }
+            else {
+                textView2.setText("");
+                textView2.setHeight(0);
+            }
 
 
 
@@ -307,7 +367,7 @@ public class MainActivity extends FragmentActivity {
         }
         */
 
-
+        //TEST/////////////////////Обложки для дней
         ArrayList<String> coverList = new ArrayList<String>();
         for (int i=0;i<30;i++){
             coverList.add("/storage/emulated/0/DCIM/Camera/20151023_150901.jpg");
@@ -405,6 +465,9 @@ public class MainActivity extends FragmentActivity {
         gridView = (GridView)findViewById(R.id.gridView);
         horizontalListView = (HorizontalListView)findViewById(R.id.horizontalListView);
         textDay = (TextView)findViewById(R.id.text_day);
+        textView2 = (TextView) findViewById(R.id.textView2);
+        textView = (TextView) findViewById(R.id.textView);
+
 
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(ImageLoaderConfiguration.createDefault(this));
