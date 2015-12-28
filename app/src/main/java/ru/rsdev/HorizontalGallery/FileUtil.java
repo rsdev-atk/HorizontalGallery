@@ -34,12 +34,21 @@ public class FileUtil {
                         try {
                             exif = new ExifInterface(file2.toString());
                             String exifAttribute = getExif(exif);
+                            /*
+                            if(exifAttribute == null)
+                                continue;
+                            */
+
+
                             if(exifAttribute == null)
                                 exifAttribute = "Нет даты";
 
                             if(exifAttribute.equals("Нет даты")){
                                 fileProperty.add("Нет даты");
                             }
+
+
+
                             else
                             fileProperty.add(dateUtil.getDateWithoutTime(exifAttribute));
 

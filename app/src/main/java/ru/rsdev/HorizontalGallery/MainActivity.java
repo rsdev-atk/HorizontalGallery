@@ -99,26 +99,20 @@ public class MainActivity extends FragmentActivity {
             calendar.add(Calendar.DAY_OF_MONTH, -1);
         }
 
-        setImageInDateList();
-
-
-
-
+//        setImageInDateList();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //Показываем путь к изображению
-                Toast.makeText(getApplication(), fileList.get(position), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplication(), fileList.get(position), Toast.LENGTH_SHORT).show();
 
                 //Показ выбранного изображения
                 ImageDialogFragment imageDialogFragment = new ImageDialogFragment();
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("dayList",dayList);
                 imageDialogFragment.setArguments(bundle);
-
-
                 imageDialogFragment.show(getFragmentManager(), "imageDialogFragment");
 
             }
@@ -304,7 +298,7 @@ public class MainActivity extends FragmentActivity {
 
 
             }
-            setImageInDateList();
+//            setImageInDateList();
             //textView.setText(dateUtil.getDateWithoutTime(unicDateList.get(0)));
             textView.setText(unicDateList.get(0));
 
@@ -354,27 +348,53 @@ public class MainActivity extends FragmentActivity {
 
         ///////TEST//////наполняем тестовыми данными для отображения
 
-        /*
-        ArrayList<String> coverList = new ArrayList<String>();
+        ArrayList<String> coverList = new ArrayList<>();
         for(int i=0;i<unicDateList.size();i++){
+            ArrayList<String> dayListItem = getAllImageInDay(i);
+            if(dayListItem.isEmpty())
+                //coverList.add(null);
+                coverList.add("null");
+
+            else {
+                String inputDate = dayListItem.get(0);
+                StringBuilder sb = new StringBuilder(inputDate);
+                sb.delete(0,6);
+                coverList.add(sb.toString());
+            }
+        }
+
+
+/*
+        ArrayList<String> coverList = new ArrayList<>();
+        //Map coverMap = new HashMap<String,String>();
+        //
+
+        for(int i=0;i<unicDateList.size();i++){
+
             for (int j=0;j<fileList.size();j++){
-                if(fileProperty.get(j).equals(unicDateList.get(i))){
+                String param1 = fileProperty.get(j);
+                String param2 = unicDateList.get(i);
+
+                if(param1.equals(param2)){
                     coverList.add(fileList.get(j));
+                    //coverMap.put(param1,fileList.get(j));
                     break;
                 }
             }
-
         }
-        */
+
 
         //TEST/////////////////////Обложки для дней
         ArrayList<String> coverList = new ArrayList<String>();
         for (int i=0;i<30;i++){
             coverList.add("/storage/emulated/0/DCIM/Camera/20151023_150901.jpg");
         }
+        */
 
         ListAdapter adapterListView = new ListAdapter(this, unicDateList, coverList);
         horizontalListView.setAdapter(adapterListView);
+
+
     }
 
     //Обработчик нажатий по контекстному меню в GridView
@@ -390,15 +410,9 @@ public class MainActivity extends FragmentActivity {
 
             case R.id.item2://Изменение обложки
 
-
-
-
-
-
                 break;
 
             case R.id.item3://Изменение описание
-
                 AlertDialog.Builder alert = new AlertDialog.Builder(this);
                 alert.setTitle("Введите описание дня");
                 final EditText input = new EditText(this);
@@ -417,21 +431,14 @@ public class MainActivity extends FragmentActivity {
                     }
                 });
                 alert.show();
-
                 break;
 
             case R.id.item4://Изменение звука
-
-
                 Intent intent = new Intent();
                 intent.setType("audio/mp3");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(
                 intent, "Open Audio (mp3) file"), RQS_OPEN_AUDIO_MP3);
-
-
-
-
                 break;
             default:
                 return super.onContextItemSelected(item);
@@ -449,7 +456,7 @@ public class MainActivity extends FragmentActivity {
                 String soundPath = audioFileUri.getPath();
 
                 sharedPreferencesUtil.setData(getApplication(), "sound_"+ unicDateList.get(dayNumber), soundPath);
-                int a=0;
+
             }
         }
     }

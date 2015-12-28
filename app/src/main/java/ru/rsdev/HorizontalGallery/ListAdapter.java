@@ -33,7 +33,6 @@ public class ListAdapter extends BaseAdapter {
         this.itemsName=itemsName;
         this.itemsImage=itemsImage;
 
-
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
